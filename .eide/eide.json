@@ -1,0 +1,78 @@
+{
+  "name": "gpio",
+  "type": "ARM",
+  "dependenceList": [],
+  "srcDirs": [
+    ".eide/deps"
+  ],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [
+      {
+        "path": "LIB/std_types.h"
+      },
+      {
+        "path": "main.c"
+      },
+      {
+        "path": "MCAL/gpio/gpio_config.h"
+      },
+      {
+        "path": "MCAL/gpio/gpio_interface.h"
+      },
+      {
+        "path": "MCAL/gpio/gpio_private.h"
+      },
+      {
+        "path": "MCAL/gpio/gpio_program.c"
+      }
+    ],
+    "folders": []
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "ca344cf4a7488462f37ce496521aa8ec"
+  },
+  "targets": {
+    "Debug": {
+      "excludeList": [],
+      "toolchain": "GCC",
+      "compileConfig": {
+        "cpuType": "Cortex-M4",
+        "floatingPointHardware": "none",
+        "scatterFilePath": "D:/ARM/gpio/startup_TM4C123.s",
+        "useCustomScatterFile": true,
+        "storageLayout": {
+          "RAM": [],
+          "ROM": []
+        },
+        "options": "null"
+      },
+      "uploader": "JLink",
+      "uploadConfig": {
+        "bin": "",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "TI",
+          "cpuName": "TM4C123GH6PM"
+        },
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": ""
+      },
+      "uploadConfigMap": {},
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          ".eide/deps"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": []
+      }
+    }
+  },
+  "version": "3.3"
+}
