@@ -27,8 +27,6 @@ enu_ledErrorState_t LED_init(st_led_t *st_a_led)
         {
             /*do nothing*/
         }
-        
-        
     }
     else
     {
