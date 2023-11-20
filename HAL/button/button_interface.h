@@ -41,7 +41,7 @@ typedef enum __buttonPin
 typedef enum __buttonPort
 {
     BUTTON_PORTA   = 0 ,
-    LED_PORTB       ,
+    LED_PORTB          ,
     BUTTON_PORTC       ,
     BUTTON_PORTD       ,
     BUTTON_PORTE       ,
@@ -53,7 +53,10 @@ typedef struct __button
     enu_buttonPort_t buttonPort ;
     enu_buttonPin_t  BUTTON_PIN0;
     enu_buttonMode_t buttonMode;
-    void *buttonCallbackFunction;
+    void *buttonHandler;
 }st_button_t;
+
+enu_buttonErrorState_t BUTTON_init(st_button_t *st_a_button);
+enu_buttonErrorState_t BUTTON_getButtonState(st_button_t *st_a_button);
 
 #endif /*BUTTON_INTERFACE_H_*/

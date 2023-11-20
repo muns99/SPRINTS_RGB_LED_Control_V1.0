@@ -4,10 +4,10 @@
 #include "gpio_config.h"
 #include "gpio_interface.h"
 
-#include "TM4C123.h"
-#include "core_cm4.h" 
+//#include "TM4C123.h"
+//#include "core_cm4.h" 
 
- const st_gpioConfig_t st_gl_cst_gpioConfig;
+const st_gpioConfig_t st_gl_cst_gpioConfig;
 
 
 enu_systemErrorState_t  GPIO_init()
