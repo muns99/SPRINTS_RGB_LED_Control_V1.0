@@ -13,7 +13,7 @@ typedef enum __buttonState
 {
     BUTTON_PRESSED  = 0 ,
     BUTTON_UN_PRESSED   ,
-    INVALIDE_BUTTON_STATE
+    INVALID_BUTTON_STATE
 }enu_buttonState_t;
 
 typedef enum __buttonMode
@@ -51,12 +51,17 @@ typedef enum __buttonPort
 typedef struct __button
 {
     enu_buttonPort_t buttonPort ;
-    enu_buttonPin_t  BUTTON_PIN0;
+    enu_buttonPin_t  buttonPin;
     enu_buttonMode_t buttonMode;
     void *buttonHandler;
 }st_button_t;
 
 enu_buttonErrorState_t BUTTON_init(st_button_t *st_a_button);
 enu_buttonErrorState_t BUTTON_getButtonState(st_button_t *st_a_button);
+enu_buttonErrorState_t BUTTON_enable(st_button_t *st_a_button);
+enu_buttonErrorState_t BUTTON_disable(st_button_t *st_a_button);
+enu_buttonErrorState_t BUTTON_deInit(st_button_t *st_a_button);
+
+
 
 #endif /*BUTTON_INTERFACE_H_*/
