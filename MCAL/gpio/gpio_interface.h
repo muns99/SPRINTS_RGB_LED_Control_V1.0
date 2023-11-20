@@ -26,10 +26,10 @@ typedef enum __gpioPin
 
 typedef enum __gpioInterruptMode
 {
-	GPIO_NO_INTERRUPT = 0,
-	GPIO_RISING_EDGE     ,
-	GPIO_FALLING_EDGE    ,
-	GPIO_BOTH_EDGES      ,
+	GPIO_PIN_NO_INTERRUPT = 0,
+	GPIO_PIN_RISING_EDGE     ,
+	GPIO_PIN_FALLING_EDGE    ,
+	GPIO_PIN_BOTH_EDGES      ,
     INVALID_INTERRUPT_MODE
 } enu_gpioPinInterruptMode_t;
 
@@ -92,6 +92,7 @@ typedef struct  __gpioPinConfig
     enu_gpioPinDrive_t pinDrive;
     enu_gpioPinPullMode_t pinPullMode;
     enu_gpioPinInterruptMode_t pinInterruptMode;
+    void *pinInterruptHandler;
 }st_gpioPinConfig_t;
 
 typedef struct __gpioPortConfig
