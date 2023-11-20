@@ -1,15 +1,7 @@
 #include "MCAL/gpio/gpio_interface.h"
-st_gpioPinConfig_t sw1 = {
-            GPIO_PORTF,
-            GPIO_PIN4,
-            GPIO_PIN_INPUT,
-            GPIO_LOW,
-            GPIO_PIN_TYPE,
-            GPIO_PIN_DRIVE_8MA,
-            GPIO_PIN_PULLUP,
-            GPIO_NO_INTERRUPT
-    };
-	  
+
+
+
 st_gpioPinConfig_t red = {
         GPIO_PORTF,
         GPIO_PIN1,
@@ -18,7 +10,7 @@ st_gpioPinConfig_t red = {
         GPIO_PIN_TYPE,
         GPIO_PIN_DRIVE_2MA,
         GPIO_PIN_NO_PULL,
-        GPIO_NO_INTERRUPT
+        GPIO_PIN_NO_INTERRUPT
 };
 
 st_gpioPinConfig_t blue = {
@@ -29,7 +21,7 @@ st_gpioPinConfig_t blue = {
         GPIO_PIN_TYPE,
         GPIO_PIN_DRIVE_2MA,
         GPIO_PIN_NO_PULL,
-        GPIO_NO_INTERRUPT
+        GPIO_PIN_NO_INTERRUPT
 };
 st_gpioPinConfig_t green = {
         GPIO_PORTF,
@@ -39,8 +31,11 @@ st_gpioPinConfig_t green = {
         GPIO_PIN_TYPE,
         GPIO_PIN_DRIVE_2MA,
         GPIO_PIN_NO_PULL,
-        GPIO_NO_INTERRUPT
+        GPIO_PIN_NO_INTERRUPT
 };
+
+
+
 void firstPress()
 {
     GPIO_setPinValue(&red,GPIO_HIGH);
@@ -70,27 +65,41 @@ void fifthPress()
     GPIO_setPinValue(&green,GPIO_LOW);
     GPIO_setPinValue(&blue,GPIO_LOW);
 }
-
-void sixthPress()
+void(*funcPtr[])(void) = {firstPress,secondPress,thirdPress,fourthPress,fifthPress};
+void routine(void)
 {
+  GPIO_togglePin(&red);
 
+	
 }
+st_gpioPinConfig_t sw1 = {
+            GPIO_PORTF,
+            GPIO_PIN4,
+            GPIO_PIN_INPUT,
+            GPIO_LOW,
+            GPIO_PIN_TYPE,
+            GPIO_PIN_DRIVE_8MA,
+            GPIO_PIN_PULLUP,
+            GPIO_PIN_FALLING_EDGE,
+            routine
+    };
+	  
 int main()
 {
 	 
-    void(*funcPtr[])(void) = {firstPress,secondPress,thirdPress,fourthPress,fifthPress};
+    void *ptr;
     GPIO_initPin(&red);
     GPIO_initPin(&blue);
     GPIO_initPin(&green);
-		GPIO_initPin(&sw1);
+  	GPIO_initPin(&sw1);
 
     uint8_t sw1Value = GPIO_HIGH ;
     uint8_t counter = 0;
-    
-    
+    ptr = routine;
+    ((void (*)(void))ptr)(); 
     while (1)
     {
-        GPIO_getPinValue(&sw1,&sw1Value);
+        /*GPIO_getPinValue(&sw1,&sw1Value);
         if (sw1Value == GPIO_LOW)
         {
             counter++;
@@ -114,7 +123,7 @@ int main()
            
         }
 
-        
+        */
         
     }
     
