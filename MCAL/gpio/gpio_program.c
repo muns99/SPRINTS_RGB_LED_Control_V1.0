@@ -380,6 +380,30 @@ enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_
     }
     return enu_a_functionRet;
 }
+
+enu_systemErrorState_t  GPIO_disableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin)
+{
+     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
+    if (enu_a_port < INVALID_PORT>)
+    {
+      if (enu_a_pin <INVALID_PIN)
+        {
+            ptr_func_gl_gpioPortsHandlers[enu_a_port] = NULL;
+            CLR_BIT(ACCESS_REG(enu_a_port,GPIOIM),enu_a_pin);
+            NVIC_DisableIRQ(enu_gl_gpioPortsIrq[enu_a_port]);        
+        }
+        else
+        {
+            enu_a_functionRet = GPIO_INVALID_STATE;
+        }   
+    }
+    else
+    {
+        enu_a_functionRet = GPIO_INVALID_STATE;
+    }
+    return enu_a_functionRet;
+}
+
 enu_systemErrorState_t  GPIO_configureInterrupt(st_gpioPinConfig_t *st_a_pin)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
@@ -451,7 +475,6 @@ enu_systemErrorState_t  GPIO_configureInterrupt(st_gpioPinConfig_t *st_a_pin)
     }
     return enu_a_functionRet;
 }
-enu_systemErrorState_t  GPIO_disableInterrupt(st_gpioPinConfig_t *st_a_pin);
 
 
 
