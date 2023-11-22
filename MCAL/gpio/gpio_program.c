@@ -270,18 +270,18 @@ enu_systemErrorState_t  GPIO_setPinValue(enu_gpioPort_t enu_a_port,enu_pin_t enu
 
     return enu_a_functionRet;
 }
-enu_systemErrorState_t  GPIO_getPinValue(st_gpioPinConfig_t *st_a_pin , uint8_t *uint8_a_value)
+enu_systemErrorState_t  GPIO_getPinValue(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin , uint8_t *uint8_a_value)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (st_a_pin != NULL)
+    if (enu_a_port < INVALID_PORT)
     {
-        if (st_a_pin->port < INVALID_PORT)
+        if (enu_a_pin < INVALID_PIN)
         {
-            if (GET_BIT(RCGCGPIO_REG,st_a_pin->port))
+            if (GET_BIT(RCGCGPIO_REG,enu_a_port))   //check for port init
             {
                 if (uint8_a_value != NULL)
                 {
-                    if (GET_BIT(ACCESS_REG(st_a_pin->port,GPIODATA),st_a_pin->pinNum) == GPIO_LOW)
+                    if (GET_BIT(ACCESS_REG(enu_a_port,GPIODATA),enu_a_pin) == GPIO_LOW)
                     {
                         *uint8_a_value = GPIO_LOW;
                     }
