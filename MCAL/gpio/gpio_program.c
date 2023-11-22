@@ -7,9 +7,13 @@
 #include "TM4C123.h"
 #include "core_cm4.h" 
 #define EN0_REG *((volatile uint32_t*)0xE000E100) 
-const st_gpioConfig_t st_gl_cst_gpioConfig;
 
-void *void_ptr_gl_portfHandler[GPIO_PORTS];
+
+IRQn_Type enu_gl_gpioPortsIrq[]={GPIOA_IRQn,GPIOB_IRQn,GPIOC_IRQn,GPIOD_IRQn,GPIOE_IRQn,GPIOF_IRQn};
+const st_gpioConfig_t st_gl_cst_gpioConfig;
+void (*ptr_func_gl_gpioPortsHandlers[GPIO_PORTS])(void)={NULL};
+
+
 enu_systemErrorState_t  GPIO_init()
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
@@ -316,24 +320,16 @@ enu_systemErrorState_t  GPIO_getPinValue(enu_gpioPort_t enu_a_port, enu_pin_t en
     return enu_a_functionRet;
 }
 
-enu_systemErrorState_t  GPIO_togglePin(st_gpioPinConfig_t *st_a_pin)
+enu_systemErrorState_t  GPIO_togglePin(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (st_a_pin != NULL)
+    if (enu_a_port < INVALID_PORT)
     {
-        if (st_a_pin->port < INVALID_PORT)
+        if (GET_BIT(RCGCGPIO_REG,enu_a_port))
         {
-            if (GET_BIT(RCGCGPIO_REG,st_a_pin->port))
+            if (enu_a_pin < INVALID_PIN)
             {
-                if (st_a_pin->pinNum < INVALID_PIN)
-                {
-                    TOG_BIT(ACCESS_REG(st_a_pin->port,GPIODATA),st_a_pin->pinNum);
-                }
-                else
-                {
-                    enu_a_functionRet = GPIO_INVALID_STATE; 
-                }
-                
+                TOG_BIT(ACCESS_REG(enu_a_port,GPIODATA),enu_a_pin);  
             }
             else
             {
@@ -354,69 +350,29 @@ enu_systemErrorState_t  GPIO_togglePin(st_gpioPinConfig_t *st_a_pin)
     return enu_a_functionRet;
 }
 
-enu_systemErrorState_t  GPIO_enableInterrupt(st_gpioPinConfig_t *st_a_pin)
+enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin,void(*ptr_func_pinInterruptCallack)(void))
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (st_a_pin != NULL)
+    if (enu_a_port < INVALID_PORT>)
     {
-      if (st_a_pin->pinInterruptMode != GPIO_PIN_NO_INTERRUPT)
-                {
-                    if (st_a_pin->pinNum <INVALID_PIN)
-                    {
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);
-                        if (st_a_pin->pinInterruptMode == GPIO_PIN_BOTH_EDGES)
-                        {
-                            SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);
-                            SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);
-                            NVIC_EnableIRQ(GPIOF_IRQn);
-                            __enable_irq();
-                        }
-                        else
-                        {
-                            CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);
-                            if (st_a_pin->pinInterruptMode == GPIO_PIN_RISING_EDGE)
-                            {
-                                SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);
-                                SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);
-                                NVIC_EnableIRQ(GPIOF_IRQn);
-                                __enable_irq();
-                            }
-                            else if (st_a_pin->pinInterruptMode == GPIO_PIN_FALLING_EDGE)
-                            {
-                                CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);
-                                SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);
-                                NVIC_EnableIRQ(GPIOF_IRQn);
-                                __enable_irq();
-                            }
-                            else
-                            {
-                                enu_a_functionRet = GPIO_INVALID_STATE;
-                            }
-                            
-                        }
-                        if (st_a_pin->pinInterruptHandler != NULL)
-                        {
-                            void_ptr_gl_portfHandler[st_a_pin->port] = st_a_pin->pinInterruptHandler;
-                        }
-                        else
-                        {
-                            enu_a_functionRet = GPIO_INVALID_STATE;
-                        }
-                        
-                        
-                    }
-                    else
-                    {
-                        enu_a_functionRet = GPIO_INVALID_STATE;
-                    }
-                    
-                }
-                else
-                {
-                    enu_a_functionRet = GPIO_INVALID_STATE;
-                }   
+      if (enu_a_pin <INVALID_PIN)
+        {
+            if (ptr_func_pinInterruptCallack != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[enu_a_port] = ptr_func_pinInterruptCallack;
+                SET_BIT(ACCESS_REG(enu_a_port,GPIOIM),enu_a_pin);
+                NVIC_EnableIRQ(enu_gl_gpioPortsIrq[enu_a_port]);
+                __enable_irq();
+            }
+            else
+            {
+                enu_a_functionRet = GPIO_INVALID_STATE;
+            }      
+        }
+        else
+        {
+            enu_a_functionRet = GPIO_INVALID_STATE;
+        }   
     }
     else
     {
