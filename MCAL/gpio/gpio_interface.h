@@ -123,12 +123,16 @@ typedef struct __gpioConfig
 enu_systemErrorState_t  GPIO_init();
 enu_systemErrorState_t  GPIO_initPort(st_gpioPortConfig_t *st_a_port);
 enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin);
-enu_systemErrorState_t  GPIO_setPinValue(st_gpioPinConfig_t *st_a_pin , enu_pinLogic_t enu_a_value);
-enu_systemErrorState_t  GPIO_getPinValue(st_gpioPinConfig_t *st_a_pin , uint8_t *uint8_a_value);
-enu_systemErrorState_t  GPIO_togglePin(st_gpioPinConfig_t *st_a_pin);
-enu_systemErrorState_t  GPIO_enableInterrupt(st_gpioPinConfig_t *st_a_pin);
-enu_systemErrorState_t  GPIO_configureInterrupt(st_gpioPinConfig_t *st_a_pin);
-enu_systemErrorState_t  GPIO_disableInterrupt(st_gpioPinConfig_t *st_a_pin);
+enu_systemErrorState_t  GPIO_setPinValue(enu_gpioPort_t enu_a_port,enu_pin_t enu_a_pin ,enu_pinLogic_t enu_a_value);
+enu_systemErrorState_t  GPIO_getPinValue(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin , uint8_t *uint8_a_value);
+enu_systemErrorState_t  GPIO_togglePin(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin );
+enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin,void(*ptr_func_pinInterruptCallack)(void));
+enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin ,enu_gpioPinInterruptMode_t enu_a_interruptMode);
+enu_systemErrorState_t  GPIO_disableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin);
+enu_systemErrorState_t  GPIO_deInit();
+enu_systemErrorState_t  GPIO_deInitPort(st_gpioPortConfig_t *st_a_port);
+enu_systemErrorState_t  GPIO_deInitPin(st_gpioPinConfig_t *st_a_pin);
+
 
 
 #endif // !GPIO_INTERFACE_H_

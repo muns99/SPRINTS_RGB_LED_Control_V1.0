@@ -216,26 +216,27 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
 
 
 
-enu_systemErrorState_t  GPIO_setPinValue(st_gpioPinConfig_t *st_a_pin , enu_pinLogic_t enu_a_value)
+enu_systemErrorState_t  GPIO_setPinValue(enu_gpioPort_t enu_a_port,enu_pin_t enu_a_pin ,enu_pinLogic_t enu_a_value)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (st_a_pin != NULL)
+    
+    if (enu_a_port < INVALID_PORT)
     {
-        if (st_a_pin->port < INVALID_PORT)
+        if (GET_BIT(RCGCGPIO_REG,enu_a_port))   //check if the port was init 
         {
-            if (GET_BIT(RCGCGPIO_REG,st_a_pin->port))
+            if (enu_a_pin < INVALID_PIN)
             {
-                if (GET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum) == GPIO_PIN_OUTPUT)
+                if (GET_BIT(ACCESS_REG(enu_a_port,GPIODIR),enu_a_pin) == GPIO_PIN_OUTPUT) //check if the is output or not
                 {
-                    if (enu_a_value < INVALID_PIN_LOGIC)
+                    if (enu_a_value < INVALID_PIN_LOGIC)    
                     {
                         if (enu_a_value == GPIO_LOW)
                         {
-                            CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODATA),st_a_pin->pinNum);
+                            CLR_BIT(ACCESS_REG(enu_a_port,GPIODATA),enu_a_pin);
                         }
                         else
                         {
-                            SET_BIT(ACCESS_REG(st_a_pin->port,GPIODATA),st_a_pin->pinNum);
+                            SET_BIT(ACCESS_REG(enu_a_port,GPIODATA),enu_a_pin);
                         }
                         
                     }
@@ -243,30 +244,30 @@ enu_systemErrorState_t  GPIO_setPinValue(st_gpioPinConfig_t *st_a_pin , enu_pinL
                     {
                         enu_a_functionRet = GPIO_INVALID_STATE; 
                     }
-                    
                 }
                 else
                 {
-                    enu_a_functionRet = GPIO_NOT_SUCCESS;
+                    enu_a_functionRet = GPIO_INVALID_STATE; 
                 }
                 
             }
             else
             {
-                enu_a_functionRet = GPIO_UN_INITIALIZED_PIN;
+                enu_a_functionRet = GPIO_NOT_SUCCESS;
             }
             
         }
         else
         {
-            enu_a_functionRet = GPIO_INVALID_STATE; 
+            enu_a_functionRet = GPIO_UN_INITIALIZED_PIN;
         }
-        
+  
     }
     else
     {
-       enu_a_functionRet = GPIO_INVALID_STATE; 
+        enu_a_functionRet = GPIO_UN_INITIALIZED_PIN;
     }
+
     return enu_a_functionRet;
 }
 enu_systemErrorState_t  GPIO_getPinValue(st_gpioPinConfig_t *st_a_pin , uint8_t *uint8_a_value)
