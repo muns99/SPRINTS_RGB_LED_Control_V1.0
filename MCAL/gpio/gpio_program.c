@@ -404,7 +404,7 @@ enu_systemErrorState_t  GPIO_disableInterrupt(enu_gpioPort_t enu_a_port, enu_pin
     return enu_a_functionRet;
 }
 
-enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin)
+enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin , enu_gpioPinInterruptMode_t enu_a_interruptMode)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
     if (enu_a_port < INVALID_PORT)
@@ -432,9 +432,7 @@ enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, en
                     {
                         CLR_BIT(ACCESS_REG(enu_a_port,GPIOIEV),enu_a_pin);
                     }
-                }
-                
-                
+                }     
             }
             else
             {
@@ -454,14 +452,40 @@ enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, en
     return enu_a_functionRet;
 }
 
-
-
+enu_systemErrorState_t GPIO_setPinCallBackFunction(enu_gpioPort_t enu_a_port , enu_pin_t enu_a_pin,void(*ptr_func_a_interruptCallBack)(void))
+{
+    enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
+    if (enu_a_port < INVALID_PORT)
+    {
+        if (enu_a_pin < INVALID_PIN)
+        {
+            if (ptr_func_a_interruptCallBack != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[enu_a_port] = ptr_func_a_interruptCallBack;
+            }
+            else
+            {
+                enu_a_functionRet = GPIO_INVALID_STATE;
+            }
+        }
+        else
+        {
+            enu_a_functionRet = GPIO_INVALID_STATE;
+        }
+    }
+    else
+    {
+        enu_a_functionRet = GPIO_INVALID_STATE;
+    }
+    return enu_a_functionRet;
+                
+}
 
 void GPIOA_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[0])();
+        void_ptr_gl_portfHandler[GPIO_PORTA]();
     }
     
 }
@@ -469,7 +493,7 @@ void GPIOB_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[1])();
+        void_ptr_gl_portfHandler[GPIO_PORTB]();
     }
     
 }
@@ -477,7 +501,7 @@ void GPIOC_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[2])();
+        void_ptr_gl_portfHandler[GPIO_PORTC]();
     }
     
 }
@@ -485,7 +509,7 @@ void GPIOD_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[3])();
+        void_ptr_gl_portfHandler[GPIO_PORTD]();
     }
     
 }
@@ -493,7 +517,7 @@ void GPIOE_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[4])();
+        void_ptr_gl_portfHandler[GPIO_PORTE]();
     }
     
 }
@@ -502,7 +526,7 @@ void GPIOF_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
     {
-        ((void(*)(void))void_ptr_gl_portfHandler[5])();
+        void_ptr_gl_portfHandler[GPIO_PORTF]();
     }
     
 }
