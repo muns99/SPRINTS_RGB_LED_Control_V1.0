@@ -6,51 +6,45 @@
 
 void getButtonGpioPinStruct(st_button_t *st_a_button,st_gpioPinConfig_t *st_a_buttonPin,enu_buttonErrorState_t *enu_a_functionRet)
 {
-    st_gpioPinConfig_t st_a_buttonPin = 
+st_gpioPinConfig_t st_a_buttonPin = 
+    {
+        .port =  st_a_button->buttonPort,
+        .pinNum = st_a_button->buttonPin,
+    };
+    switch (st_a_button->buttonMode)
+    {
+        case BUTTON_PULLUP_MODE:
         {
-            .port =  st_a_button->buttonPort,
-            .pinNum = st_a_button->buttonPin,
-            .pinDirection = GPIO_PIN_INPUT,
-            .pinType =  GPIO_PIN_TYPE
-        };
-        switch (st_a_button->buttonMode)
-        {
-            case BUTTON_PULLUP_MODE:
-            {
-                st_a_buttonPin.pinPullMode = GPIO_PIN_PULLUP;
-                st_a_buttonPin.pinInterruptMode = GPIO_NO_INTERRUPT;
-                break;
-            }
-            case BUTTON_PULLDOWN_MODE:
-            {
-                st_a_buttonPin.pinPullMode = GPIO_PIN_PULLDOWN;
-                st_a_buttonPin.pinInterruptMode = GPIO_NO_INTERRUPT;
-                break;
-            }
-            case BUTTON_INTERRUPT_RISING_EDGE_MODE:
-            {
-                st_a_buttonPin.pinPullMode = GPIO_PIN_NO_PULL;
-                st_a_buttonPin.pinInterruptMode = GPIO_RISING_EDGE;
-                break;
-            }
-            case BUTTON_INTERRUPT_FALLING_EDGE_MODE:
-            {
-                st_a_buttonPin.pinPullMode = GPIO_PIN_NO_PULL;
-                st_a_buttonPin.pinInterruptMode = GPIO_FALLING_EDGE;
-                break;
-            }
-            case BUTTON_INTERRUPT_BOTH_EDGES_MODE:
-            {
-                st_a_buttonPin.pinPullMode = GPIO_PIN_NO_PULL;
-                st_a_buttonPin.pinInterruptMode = GPIO_BOTH_EDGES;
-                break;
-            }
-            default:
-            {
-                enu_a_functionRet = BUTTON_INVALID_STATE;
-                break;
-            }
+            st_a_buttonPin.pinMode = INPUT_PULL_UP;
+            break;
         }
+        case BUTTON_PULLDOWN_MODE:
+        {
+            st_a_buttonPin.pinMode = INPUT_PULL_DOWN;
+            break;
+        }
+        case BUTTON_INTERRUPT_RISING_EDGE_MODE:
+        {
+            st_a_buttonPin.pinMode = INTERRUPT_RISING_EDGE;
+            break;
+        }
+        case BUTTON_INTERRUPT_FALLING_EDGE_MODE:
+        {
+            st_a_buttonPin.pinMode = INTERRUPT_FALLING_EDGE;
+            break;
+        }
+        case BUTTON_INTERRUPT_BOTH_EDGES_MODE:
+        {
+            st_a_buttonPin.pinMode = INTERRUPT_BOTH_EDGES;
+            break;
+        }
+        default:
+        {
+            enu_a_functionRet = BUTTON_INVALID_STATE;
+            break;
+        }
+    }
+    return enu_a_functionRet;
         
 }
 
@@ -120,11 +114,59 @@ enu_buttonErrorState_t BUTTON_getButtonState(st_button_t *st_a_button,uint8_t *u
 }
 enu_buttonErrorState_t BUTTON_enable(st_button_t *st_a_button)
 {
-    enu_buttonErrorState_t 
+    enu_buttonErrorState_t enu_a_functionRet = BUTTON_SUCCESS;
+    if (st_a_button != NULL)
+    {
+        if (uint8_a_buttonState != NULL)
+        {
+            enu_a_functionRet = GPIO_enableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin,st_a_button->buttonHandler); 
+            if (enu_a_functionRet != GPIO_SUCCESS)
+            {
+                enu_a_functionRet = BUTTON_NOT_SUCCESS;
+            }
+            else
+            {
+                /*do nothing*/
+            }
+        }
+        else
+        {
+            enu_a_functionRet = BUTTON_INVALID_STATE;
+        }     
+    }
+    else
+    {
+        enu_a_functionRet = BUTTON_INVALID_STATE;
+    }
+    return enu_a_functionRet;
 }
 enu_buttonErrorState_t BUTTON_disable(st_button_t *st_a_button)
 {
-
+    enu_buttonErrorState_t enu_a_functionRet = BUTTON_SUCCESS;
+    if (st_a_button != NULL)
+    {
+        if (uint8_a_buttonState != NULL)
+        {
+            enu_a_functionRet = GPIO_disableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin); 
+            if (enu_a_functionRet != GPIO_SUCCESS)
+            {
+                enu_a_functionRet = BUTTON_NOT_SUCCESS;
+            }
+            else
+            {
+                /*do nothing*/
+            }
+        }
+        else
+        {
+            enu_a_functionRet = BUTTON_INVALID_STATE;
+        }     
+    }
+    else
+    {
+        enu_a_functionRet = BUTTON_INVALID_STATE;
+    }
+    return enu_a_functionRet;
 }
 enu_buttonErrorState_t BUTTON_deInit(st_button_t *st_a_button)
 {

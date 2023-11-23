@@ -53,7 +53,7 @@ typedef struct __button
     enu_buttonPort_t buttonPort ;
     enu_buttonPin_t  buttonPin;
     enu_buttonMode_t buttonMode;
-    void *buttonHandler;
+    void (*buttonHandler)(void);
 }st_button_t;
 
 enu_buttonErrorState_t BUTTON_init(st_button_t *st_a_button);
