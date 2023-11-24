@@ -6,7 +6,7 @@
 
 void getButtonGpioPinStruct(st_button_t *st_a_button,st_gpioPinConfig_t *st_a_buttonPin,enu_buttonErrorState_t *enu_a_functionRet)
 {
-st_gpioPinConfig_t st_a_buttonPin = 
+    st_gpioPinConfig_t st_a_buttonPin = 
     {
         .port =  st_a_button->buttonPort,
         .pinNum = st_a_button->buttonPin,
@@ -117,22 +117,17 @@ enu_buttonErrorState_t BUTTON_enable(st_button_t *st_a_button)
     enu_buttonErrorState_t enu_a_functionRet = BUTTON_SUCCESS;
     if (st_a_button != NULL)
     {
-        if (uint8_a_buttonState != NULL)
+    
+        enu_a_functionRet = GPIO_enableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin,st_a_button->buttonHandler); 
+        if (enu_a_functionRet != GPIO_SUCCESS)
         {
-            enu_a_functionRet = GPIO_enableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin,st_a_button->buttonHandler); 
-            if (enu_a_functionRet != GPIO_SUCCESS)
-            {
-                enu_a_functionRet = BUTTON_NOT_SUCCESS;
-            }
-            else
-            {
-                /*do nothing*/
-            }
+            enu_a_functionRet = BUTTON_NOT_SUCCESS;
         }
         else
         {
-            enu_a_functionRet = BUTTON_INVALID_STATE;
-        }     
+            /*do nothing*/
+        }
+       
     }
     else
     {
@@ -145,22 +140,17 @@ enu_buttonErrorState_t BUTTON_disable(st_button_t *st_a_button)
     enu_buttonErrorState_t enu_a_functionRet = BUTTON_SUCCESS;
     if (st_a_button != NULL)
     {
-        if (uint8_a_buttonState != NULL)
+    
+        enu_a_functionRet = GPIO_disableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin); 
+        if (enu_a_functionRet != GPIO_SUCCESS)
         {
-            enu_a_functionRet = GPIO_disableInterrupt(st_a_button->buttonPort,st_a_button->buttonPin); 
-            if (enu_a_functionRet != GPIO_SUCCESS)
-            {
-                enu_a_functionRet = BUTTON_NOT_SUCCESS;
-            }
-            else
-            {
-                /*do nothing*/
-            }
+            enu_a_functionRet = BUTTON_NOT_SUCCESS;
         }
         else
         {
-            enu_a_functionRet = BUTTON_INVALID_STATE;
-        }     
+            /*do nothing*/
+        }
+    
     }
     else
     {
