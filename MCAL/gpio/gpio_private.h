@@ -3,6 +3,8 @@
 
 #define GPIO_APB_ADDRESS    0x40004000
 #define GPIO_AHB_ADDRESS    0x40058000
+
+#define ANALOG_PIN_MASK     0x01 
 typedef enum __regPin
 {
     REG_PIN0 = 0    ,
