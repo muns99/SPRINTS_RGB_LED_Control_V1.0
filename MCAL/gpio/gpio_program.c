@@ -6,12 +6,8 @@
 
 #include "TM4C123.h"
 #include "core_cm4.h" 
-#define EN0_REG *((volatile uint32_t*)0xE000E100) 
 
-
-IRQn_Type enu_gl_gpioPortsIrq[]={GPIOA_IRQn,GPIOB_IRQn,GPIOC_IRQn,GPIOD_IRQn,GPIOE_IRQn,GPIOF_IRQn};
-const st_gpioConfig_t st_gl_cst_gpioConfig;
-void (*ptr_func_gl_gpioPortsHandlers[GPIO_PORTS])(void)={NULL};
+ const st_gpioConfig_t st_gl_cst_gpioConfig;
 
 
 enu_systemErrorState_t  GPIO_init()
