@@ -77,7 +77,7 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
     {
         if (st_a_pin->port < INVALID_PORT)
         {
-            if (st_a_pin->pin < INVALID_PIN)
+            if (st_a_pin->pinNum < INVALID_PIN)
             {
                 switch (st_a_pin->pinMode)
                 {
@@ -122,7 +122,7 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
                         SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
                         CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
                         CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        ACCESS_REG(st_a_pin->port,GPIODEN) = ANALOG_PIN_MASK            //set pin as analog
+                        ACCESS_REG(st_a_pin->port,GPIODEN) = ANALOG_PIN_MASK ;           //set pin as analog
                         break;
                     }
                     case INPUT_PULL_UP:
@@ -349,7 +349,7 @@ enu_systemErrorState_t  GPIO_togglePin(enu_gpioPort_t enu_a_port, enu_pin_t enu_
 enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin,void(*ptr_func_pinInterruptCallack)(void))
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (enu_a_port < INVALID_PORT>)
+    if (enu_a_port < INVALID_PORT)
     {
       if (enu_a_pin <INVALID_PIN)
         {
@@ -380,7 +380,7 @@ enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_
 enu_systemErrorState_t  GPIO_disableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_t enu_a_pin)
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    if (enu_a_port < INVALID_PORT>)
+    if (enu_a_port < INVALID_PORT)
     {
       if (enu_a_pin <INVALID_PIN)
         {
@@ -424,7 +424,7 @@ enu_systemErrorState_t  GPIO_configurePinInterrupt(enu_gpioPort_t enu_a_port, en
                     {
                         SET_BIT(ACCESS_REG(enu_a_port,GPIOIEV),enu_a_pin);
                     }
-                    else(enu_a_interruptMode == GPIO_PIN_FALLING_EDGE)
+                    else if (enu_a_interruptMode == GPIO_PIN_FALLING_EDGE)
                     {
                         CLR_BIT(ACCESS_REG(enu_a_port,GPIOIEV),enu_a_pin);
                     }
@@ -476,7 +476,7 @@ enu_systemErrorState_t GPIO_setPinCallBackFunction(enu_gpioPort_t enu_a_port , e
     return enu_a_functionRet;
                 
 }
-
+/*
 void GPIOA_Handler(void)
 {
     if (void_ptr_gl_portfHandler != NULL)
@@ -525,4 +525,4 @@ void GPIOF_Handler(void)
         void_ptr_gl_portfHandler[GPIO_PORTF]();
     }
     
-}
+}*/
