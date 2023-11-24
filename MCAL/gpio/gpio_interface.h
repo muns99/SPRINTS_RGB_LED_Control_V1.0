@@ -104,8 +104,8 @@ typedef enum __pinMode
 typedef struct  __gpioPinConfig
 {
     enu_gpioPort_t port;
-    enu_pin_t pin;
-    enu_gpioPinMode_t pinMode;
+    enu_pin_t pinNum;
+    enu_pinMode_t pinMode;
 }st_gpioPinConfig_t;
 
 typedef struct __gpioPortConfig
