@@ -6,12 +6,112 @@
 
 #include "TM4C123.h"
 #include "core_cm4.h" 
-#define EN0_REG *((volatile uint32_t*)0xE000E100) 
+
+void digitalInputPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void digitalOutput2maPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR2R),st_a_pin->pinNum);   //set pin drive
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void digitalOutput4maPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR4R),st_a_pin->pinNum);   //set pin drive
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void digitalOutput8maPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR8R),st_a_pin->pinNum);   //set pin drive
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void analogInputPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+    ACCESS_REG(st_a_pin->port,GPIODEN) = ANALOG_PIN_MASK ;           //set pin as analog
+}
+void inputPullUpPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIOPUR),st_a_pin->pinNum);   //enable pull-up
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void inputPullDownPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIOPDR),st_a_pin->pinNum);   //enable pull-down
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
+}
+void interruptFallingEdgePinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //clear the condition
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);    //configure the port for one edge detection
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);    //configure the pin for falling edge
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
+}
+void interruptRisingEdgePinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //configure the port for edge detection
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);    //configure the pin for rising edge
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
+}
+void interruptBothEdgesPinInit(st_gpioPinConfig_t *st_a_pin)
+{
+    SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
+    CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //clear the condition
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);    //configure the pin for both edges detection
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
+}
 
 
 IRQn_Type enu_gl_gpioPortsIrq[]={GPIOA_IRQn,GPIOB_IRQn,GPIOC_IRQn,GPIOD_IRQn,GPIOE_IRQn,GPIOF_IRQn};
 const st_gpioConfig_t st_gl_cst_gpioConfig;
 void (*ptr_func_gl_gpioPortsHandlers[GPIO_PORTS])(void)={NULL};
+void (*ptr_func_gl_pinInitializationFunctions[])(st_gpioPinConfig_t *st_a_pin) =   {digitalInputPinInit,
+                                                                                    digitalOutput2maPinInit,
+                                                                                    digitalOutput4maPinInit,
+                                                                                    digitalOutput8maPinInit,
+                                                                                    analogInputPinInit,
+                                                                                    inputPullUpPinInit,
+                                                                                    inputPullDownPinInit,
+                                                                                    interruptRisingEdgePinInit,
+                                                                                    interruptFallingEdgePinInit,
+                                                                                    interruptBothEdgesPinInit
+                                                                                    }; 
 
 
 enu_systemErrorState_t  GPIO_init()
@@ -83,120 +183,15 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
         {
             if (st_a_pin->pinNum < INVALID_PIN)
             {
-                switch (st_a_pin->pinMode)
+                if (st_a_pin->pinMode < INVALID_PIN_MODE)
                 {
-                    case DIGITAL_INPUT:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case DIGITAL_OUTPUT_2MA:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR2R),st_a_pin->pinNum);   //set pin drive
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case DIGITAL_OUTPUT_4MA:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR4R),st_a_pin->pinNum);   //set pin drive
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case DIGITAL_OUTPUT_8MA:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODR8R),st_a_pin->pinNum);   //set pin drive
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case ANALOG_INPUT:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        ACCESS_REG(st_a_pin->port,GPIODEN) = ANALOG_PIN_MASK ;           //set pin as analog
-                        break;
-                    }
-                    case INPUT_PULL_UP:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIOPUR),st_a_pin->pinNum);   //enable pull-up
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case INPUT_PULL_DOWN:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);   //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum); //set pin type GPIO or alternative
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIOPDR),st_a_pin->pinNum);   //enable pull-down
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);   //set pin as a digital pin
-                        break;
-                    }
-                    case INTERRUPT_RISING_EDGE:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //configure the port for edge detection
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);    //configure the pin for rising edge
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
-                        break;
-                    }
-                    case INTERRUPT_FALLING_EDGE:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //clear the condition
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);    //configure the port for one edge detection
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);    //configure the pin for falling edge
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
-                        break;
-                    }
-                    case INTERRUPT_BOTH_EDGES:
-                    {
-                        SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
-                        CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //clear the condition
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);    //configure the pin for both edges detection
-                        SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
-                        break;
-                    }
-                    case INTERRUPT_HIGH_LEVEL:
-                    {
-                        break;
-                    }
-                    case INTERRUPT_LOW_LEVEL:
-                    {
-                        break;
-                    }
-
-                    default:
-                        enu_a_functionRet = GPIO_INVALID_STATE;
-                        break;
+                    ptr_func_gl_pinInitializationFunctions[st_a_pin->pinMode](st_a_pin);
                 }
+                else
+                {
+                    enu_a_functionRet = GPIO_INVALID_STATE; 
+                }
+                
             }
             else
             {
@@ -214,7 +209,6 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
     {
         enu_a_functionRet = GPIO_INVALID_STATE;
     }
-   // SET_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);
     return enu_a_functionRet;
 }
 

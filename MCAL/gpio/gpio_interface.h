@@ -88,18 +88,19 @@ typedef enum __pinMode
     DIGITAL_OUTPUT_4MA      ,
     DIGITAL_OUTPUT_8MA      ,
     ANALOG_INPUT            ,
-    OPEN_DRAIN_OUTPUT       ,
     INPUT_PULL_UP           ,
     INPUT_PULL_DOWN         ,
     INTERRUPT_RISING_EDGE   ,
     INTERRUPT_FALLING_EDGE  ,
     INTERRUPT_BOTH_EDGES    ,
+    OPEN_DRAIN_OUTPUT       ,
     INTERRUPT_HIGH_LEVEL    ,
     INTERRUPT_LOW_LEVEL     ,
     UART_PIN                ,
     SPI_PIN                 ,
     I2C_PIN                 ,
-    PWM_PIN                 
+    PWM_PIN                 ,
+    INVALID_PIN_MODE
 }enu_pinMode_t;
 typedef struct  __gpioPinConfig
 {

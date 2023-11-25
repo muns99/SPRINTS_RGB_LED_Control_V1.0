@@ -57,7 +57,7 @@ typedef struct __button
 }st_button_t;
 
 enu_buttonErrorState_t BUTTON_init(st_button_t *st_a_button);
-enu_buttonErrorState_t BUTTON_getButtonState(st_button_t *st_a_button);
+enu_buttonErrorState_t BUTTON_getButtonState(st_button_t *st_a_button,uint8_t *uint8_a_buttonState);
 enu_buttonErrorState_t BUTTON_enable(st_button_t *st_a_button);
 enu_buttonErrorState_t BUTTON_disable(st_button_t *st_a_button);
 enu_buttonErrorState_t BUTTON_deInit(st_button_t *st_a_button);
