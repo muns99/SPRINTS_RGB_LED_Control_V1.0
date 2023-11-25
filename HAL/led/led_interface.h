@@ -30,7 +30,7 @@ typedef enum __ledPin
 typedef enum __ledPort
 {
     LED_PORTA   = 0 ,
-    LED__PORTB       ,
+    LED_PORTB       ,
     LED_PORTC       ,
     LED_PORTD       ,
     LED_PORTE       ,

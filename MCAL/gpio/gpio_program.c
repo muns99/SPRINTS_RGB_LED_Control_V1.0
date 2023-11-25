@@ -67,12 +67,14 @@ void interruptFallingEdgePinInit(st_gpioPinConfig_t *st_a_pin)
     SET_BIT(RCGCGPIO_REG,st_a_pin->port);                           //enable clock
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIODIR),st_a_pin->pinNum);    //set pin direction
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOAFSEL),st_a_pin->pinNum);  //set pin type GPIO or alternative
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIOPUR),st_a_pin->pinNum);   //enable pull-up
+    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIM),st_a_pin->pinNum);     //mask the port interrupt
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIS),st_a_pin->pinNum);     //configure port for edge or level detection
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIORIS),st_a_pin->pinNum);    //clear the condition
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIBE),st_a_pin->pinNum);    //configure the port for one edge detection
     CLR_BIT(ACCESS_REG(st_a_pin->port,GPIOIEV),st_a_pin->pinNum);    //configure the pin for falling edge
-    SET_BIT(ACCESS_REG(st_a_pin->port,GPIODEN),st_a_pin->pinNum);    //set pin as a digital pin
+    
 }
 void interruptRisingEdgePinInit(st_gpioPinConfig_t *st_a_pin)
 {
@@ -100,7 +102,7 @@ void interruptBothEdgesPinInit(st_gpioPinConfig_t *st_a_pin)
 
 IRQn_Type enu_gl_gpioPortsIrq[]={GPIOA_IRQn,GPIOB_IRQn,GPIOC_IRQn,GPIOD_IRQn,GPIOE_IRQn,GPIOF_IRQn};
 const st_gpioConfig_t st_gl_cst_gpioConfig;
-void (*ptr_func_gl_gpioPortsHandlers[GPIO_PORTS])(void)={NULL};
+void (*ptr_func_gl_gpioPortsHandlers[GPIO_PORTS][PORT_PINS])(void)={NULL};
 void (*ptr_func_gl_pinInitializationFunctions[])(st_gpioPinConfig_t *st_a_pin) =   {digitalInputPinInit,
                                                                                     digitalOutput2maPinInit,
                                                                                     digitalOutput4maPinInit,
@@ -353,7 +355,7 @@ enu_systemErrorState_t  GPIO_enableInterrupt(enu_gpioPort_t enu_a_port, enu_pin_
         {
             if (ptr_func_pinInterruptCallack != NULL)
             {
-                ptr_func_gl_gpioPortsHandlers[enu_a_port] = ptr_func_pinInterruptCallack;
+                ptr_func_gl_gpioPortsHandlers[enu_a_port][enu_a_pin] = ptr_func_pinInterruptCallack;
                 SET_BIT(ACCESS_REG(enu_a_port,GPIOIM),enu_a_pin);
                 NVIC_EnableIRQ(enu_gl_gpioPortsIrq[enu_a_port]);
                 __enable_irq();
@@ -382,7 +384,7 @@ enu_systemErrorState_t  GPIO_disableInterrupt(enu_gpioPort_t enu_a_port, enu_pin
     {
       if (enu_a_pin <INVALID_PIN)
         {
-            ptr_func_gl_gpioPortsHandlers[enu_a_port] = NULL;
+            ptr_func_gl_gpioPortsHandlers[enu_a_port][enu_a_pin] = NULL;
             CLR_BIT(ACCESS_REG(enu_a_port,GPIOIM),enu_a_pin);
             NVIC_DisableIRQ(enu_gl_gpioPortsIrq[enu_a_port]);        
         }
@@ -455,7 +457,7 @@ enu_systemErrorState_t GPIO_setPinCallBackFunction(enu_gpioPort_t enu_a_port , e
         {
             if (ptr_func_a_interruptCallBack != NULL)
             {
-                ptr_func_gl_gpioPortsHandlers[enu_a_port] = ptr_func_a_interruptCallBack;
+                ptr_func_gl_gpioPortsHandlers[enu_a_port][enu_a_pin] = ptr_func_a_interruptCallBack;
             }
             else
             {
@@ -474,53 +476,96 @@ enu_systemErrorState_t GPIO_setPinCallBackFunction(enu_gpioPort_t enu_a_port , e
     return enu_a_functionRet;
                 
 }
-/*
+
+
+
 void GPIOA_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTA]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTA,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTA][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTA][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTA,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
+ 
 }
 void GPIOB_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTB]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTB,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTB][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTB][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTB,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
+ 
 }
 void GPIOC_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTC]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTC,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTC][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTC][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTC,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
+ 
 }
 void GPIOD_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTD]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTD,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTD][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTD][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTD,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
+ 
 }
 void GPIOE_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN6; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTE]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTE,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTE][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTE][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTE,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
+ 
 }
-
 void GPIOF_Handler(void)
 {
-    if (void_ptr_gl_portfHandler != NULL)
+    for (uint8_t uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN5; uint8_a_pinIndex++)
     {
-        void_ptr_gl_portfHandler[GPIO_PORTF]();
+        if (GET_BIT(ACCESS_REG(GPIO_PORTF,GPIORIS),uint8_a_pinIndex))
+        {
+            if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTF][uint8_a_pinIndex] != NULL)
+            {
+                ptr_func_gl_gpioPortsHandlers[GPIO_PORTF][uint8_a_pinIndex]();
+                SET_BIT(ACCESS_REG(GPIO_PORTF,GPIOICR),uint8_a_pinIndex);
+            } 
+        }
     }
-    
-}*/
+ 
+}

@@ -10,7 +10,7 @@ int main()
 	APP_start();
     while (1)
     {
-        /* code */
+       //APP_stop();
     }
     
     

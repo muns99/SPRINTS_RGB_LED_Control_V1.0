@@ -41,7 +41,7 @@ typedef enum __buttonPin
 typedef enum __buttonPort
 {
     BUTTON_PORTA   = 0 ,
-    LED_PORTB          ,
+    BUTTON_PORTB       ,
     BUTTON_PORTC       ,
     BUTTON_PORTD       ,
     BUTTON_PORTE       ,
