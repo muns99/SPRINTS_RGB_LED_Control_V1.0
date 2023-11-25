@@ -10,7 +10,7 @@ typedef enum __ledState
 
 typedef enum __ledErrorState
 {
-    LED_SUCCES  =0      ,
+    LED_SUCCESS  =0      ,
     LED_NOT_SUCCES      ,
     LED_INVALID_STATE   
 }enu_ledErrorState_t;
