@@ -119,7 +119,7 @@ void (*ptr_func_gl_pinInitializationFunctions[])(st_gpioPinConfig_t *st_a_pin) =
 enu_systemErrorState_t  GPIO_init()
 {
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
-    for(uint8_t uint8_a_portIterator = 0 ; uint8_a_portIterator < GPIO_PORTS ; uint8_a_portIterator++)
+    for(uint8_t uint8_a_portIterator = GPIO_PORTA ; uint8_a_portIterator < GPIO_PORTS ; uint8_a_portIterator++)
     {
         enu_a_functionRet = GPIO_initPort(&st_gl_cst_gpioConfig.gpioPorts[uint8_a_portIterator]);
         if (enu_a_functionRet != GPIO_SUCCESS)
@@ -185,15 +185,21 @@ enu_systemErrorState_t  GPIO_initPin(st_gpioPinConfig_t *st_a_pin)
         {
             if (st_a_pin->pinNum < INVALID_PIN)
             {
-                if (st_a_pin->pinMode < INVALID_PIN_MODE)
+                if ((st_a_pin->port == GPIO_PORTE && st_a_pin->pinNum < GPIO_PIN6) || (st_a_pin->port == GPIO_PORTF && st_a_pin->pinNum < GPIO_PIN5))
                 {
-                    ptr_func_gl_pinInitializationFunctions[st_a_pin->pinMode](st_a_pin);
+                    if (st_a_pin->pinMode < INVALID_PIN_MODE)
+                    {
+                        ptr_func_gl_pinInitializationFunctions[st_a_pin->pinMode](st_a_pin);
+                    }
+                    else
+                    {
+                        enu_a_functionRet = GPIO_INVALID_STATE; 
+                    }
                 }
                 else
                 {
                     enu_a_functionRet = GPIO_INVALID_STATE; 
                 }
-                
             }
             else
             {

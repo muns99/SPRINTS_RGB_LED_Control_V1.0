@@ -1,16 +1,16 @@
 #include "MCAL/gpio/gpio_interface.h"
 #include "HAL/button/button_interface.h"
 #include "HAL/led/led_interface.h"
-
+#include "TM4C123.h"
+#include "core_cm4.h" 
 int main()
 {
 	
 
-    APP_init();
-	APP_start();
+		APP_init();
+		APP_start();
     while (1)
     {
-       //APP_stop();
     }
     
     

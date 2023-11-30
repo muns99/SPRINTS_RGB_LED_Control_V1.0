@@ -1,5 +1,6 @@
 #ifndef APP_CONFIG_H_
 #define APP_CONFIG_H_ 
+#define APP_SEQUENCE_COUNT  5
 void APP_sequence(void);
 st_button_t st_g_sw1 = {
     .buttonPort = BUTTON_PORTF,
