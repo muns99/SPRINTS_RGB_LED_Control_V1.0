@@ -232,7 +232,7 @@ enu_systemErrorState_t  GPIO_setPinValue(enu_gpioPort_t enu_a_port,enu_pin_t enu
     
     if (enu_a_port < INVALID_PORT)
     {
-        if (GET_BIT(RCGCGPIO_REG,enu_a_port))   //check if the port was init 
+        if (GET_BIT(RCGCGPIO_REG,enu_a_port) == GPIO_HIGH)   //check if the port was init 
         {
             if (enu_a_pin < INVALID_PIN)
             {
@@ -287,7 +287,7 @@ enu_systemErrorState_t  GPIO_getPinValue(enu_gpioPort_t enu_a_port, enu_pin_t en
     {
         if (enu_a_pin < INVALID_PIN)
         {
-            if (GET_BIT(RCGCGPIO_REG,enu_a_port))   //check for port init
+            if (GET_BIT(RCGCGPIO_REG,enu_a_port) == GPIO_HIGH)   //check for port init
             {
                 if (uint8_a_value != NULL)
                 {
@@ -331,7 +331,7 @@ enu_systemErrorState_t  GPIO_togglePin(enu_gpioPort_t enu_a_port, enu_pin_t enu_
     enu_systemErrorState_t enu_a_functionRet = GPIO_SUCCESS;
     if (enu_a_port < INVALID_PORT)
     {
-        if (GET_BIT(RCGCGPIO_REG,enu_a_port))
+        if (GET_BIT(RCGCGPIO_REG,enu_a_port) == GPIO_HIGH)
         {
             if (enu_a_pin < INVALID_PIN)
             {
@@ -494,7 +494,7 @@ void GPIOA_Handler(void)
     uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTA,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTA,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTA][uint8_a_pinIndex] != NULL)
             {
@@ -509,7 +509,7 @@ void GPIOB_Handler(void)
 {
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTB,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTB,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTB][uint8_a_pinIndex] != NULL)
             {
@@ -524,7 +524,7 @@ void GPIOC_Handler(void)
 {
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTC,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTC,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTC][uint8_a_pinIndex] != NULL)
             {
@@ -539,7 +539,7 @@ void GPIOD_Handler(void)
 {
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTD,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTD,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTD][uint8_a_pinIndex] != NULL)
             {
@@ -554,7 +554,7 @@ void GPIOE_Handler(void)
 {
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN6; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTE,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTE,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTE][uint8_a_pinIndex] != NULL)
             {
@@ -569,7 +569,7 @@ void GPIOF_Handler(void)
 {
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN5; uint8_a_pinIndex++)
     {
-        if (GET_BIT(ACCESS_REG(GPIO_PORTF,GPIORIS),uint8_a_pinIndex))
+        if (GET_BIT(ACCESS_REG(GPIO_PORTF,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
         {
             if (ptr_func_gl_gpioPortsHandlers[GPIO_PORTF][uint8_a_pinIndex] != NULL)
             {
