@@ -1,8 +1,8 @@
 #include "../../LIB/std_types.h"
 #include "../../LIB/bit_math.h"
+#include "gpio_interface.h"
 #include "gpio_private.h"
 #include "gpio_config.h"
-#include "gpio_interface.h"
 
 #include "TM4C123.h"
 #include "core_cm4.h" 
@@ -507,6 +507,7 @@ void GPIOA_Handler(void)
 }
 void GPIOB_Handler(void)
 {
+    uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
         if (GET_BIT(ACCESS_REG(GPIO_PORTB,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
@@ -522,6 +523,7 @@ void GPIOB_Handler(void)
 }
 void GPIOC_Handler(void)
 {
+    uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
         if (GET_BIT(ACCESS_REG(GPIO_PORTC,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
@@ -537,6 +539,7 @@ void GPIOC_Handler(void)
 }
 void GPIOD_Handler(void)
 {
+    uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < PORT_PINS; uint8_a_pinIndex++)
     {
         if (GET_BIT(ACCESS_REG(GPIO_PORTD,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
@@ -552,6 +555,7 @@ void GPIOD_Handler(void)
 }
 void GPIOE_Handler(void)
 {
+    uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN6; uint8_a_pinIndex++)
     {
         if (GET_BIT(ACCESS_REG(GPIO_PORTE,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)
@@ -567,6 +571,7 @@ void GPIOE_Handler(void)
 }
 void GPIOF_Handler(void)
 {
+    uint8_t uint8_a_pinIndex;
     for (uint8_a_pinIndex = GPIO_PIN0; uint8_a_pinIndex < GPIO_PIN5; uint8_a_pinIndex++)
     {
         if (GET_BIT(ACCESS_REG(GPIO_PORTF,GPIORIS),uint8_a_pinIndex) == GPIO_HIGH)

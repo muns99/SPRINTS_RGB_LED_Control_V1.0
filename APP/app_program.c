@@ -2,10 +2,16 @@
 #include "../HAL/button/button_interface.h"
 #include "../HAL/led/led_interface.h"
 #include "app_interface.h"
+#include "APP_private.h"
 #include "app_config.h"
 uint8_t uint8_gl_appSequenceCounter = 0;
 void (*ptr_func_appSequenceFunctions[])(void) = {APP_firstPress,APP_secondPress,APP_thirdPress,APP_fourthPress,APP_fifthPress};
-
+void debounce()
+{
+    for (uint16_t i = 0 ; i < 10000 ; i++)
+        for(uint16_t j = 0 ; j < 100 ; j++)
+            for (uint16_t k = 0 ; k < 2 ; k++);
+}
 void APP_firstPress(void)
 {
     LED_on(&st_g_redLed);

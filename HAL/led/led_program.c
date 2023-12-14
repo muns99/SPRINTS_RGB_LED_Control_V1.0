@@ -2,10 +2,6 @@
 #include "../../MCAL/gpio/gpio_interface.h"
 #include "led_interface.h"
 
-void getledGpioPinStruct(st_led_t *st_a_led,st_gpioPinConfig_t *st_a_ledPin)
-{
-    
-}
 
 
 enu_ledErrorState_t LED_init(st_led_t *st_a_led)
